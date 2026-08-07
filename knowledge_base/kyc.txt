@@ -1,0 +1,10 @@
+# Pay-in-3 KYC and Verification Requirements
+
+Required Identification Documents:
+1. Government-issued Photo Identification: Driver's License, State ID, or Passport.
+2. Social Security Number (SSN) or Taxpayer Identification Number (ITIN) for identity verification.
+3. Proof of Address: Utility bill or bank statement issued within the last 90 days.
+4. Active US Bank Account or Debit Card linked for automated monthly installment deductions.
+
+Verification Process:
+Instant digital identity verification takes under 60 seconds during online checkout or inside sales guided sessions.

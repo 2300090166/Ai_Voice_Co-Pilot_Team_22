@@ -1,0 +1,12 @@
+# Inside Sales Transcript Examples - Pay-in-3 EMI
+
+Call Transcript 1:
+Agent: Thanks for calling Fintech Sales! How can I assist you with your purchase today?
+Customer: Hi, I'm a student at State University and I want to buy a laptop for $600. Can students apply for Pay-in-3 zero-cost EMI?
+Agent: Absolutely! As long as you are 18 or older with a valid student ID and an active debit card, students are fully eligible for our Pay-in-3 zero-cost EMI plan.
+Customer: That sounds great! Is there any interest or credit score impact?
+Agent: No interest at all—0% APR. And we only perform a soft credit check, so your credit score will not be impacted.
+
+Call Transcript 2:
+Customer: What happens if I miss a Pay-in-3 payment deadline?
+Agent: We offer a 3-day grace period for all payments. If you pay within those 3 days, there are zero late fees.

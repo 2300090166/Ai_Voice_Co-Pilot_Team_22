@@ -1,0 +1,22 @@
+{
+  "compliance_mandatory_disclosures": [
+    {
+      "rule_id": "DISCLOSURE_01",
+      "trigger": "offer_pay_in_3",
+      "required_phrase": "Pay-in-3 is a 0% interest EMI plan split into three equal monthly installments.",
+      "severity": "HIGH"
+    },
+    {
+      "rule_id": "DISCLOSURE_02",
+      "trigger": "late_payment_inquiry",
+      "required_phrase": "There is a 3-day grace period, after which a $10 late fee applies.",
+      "severity": "MEDIUM"
+    },
+    {
+      "rule_id": "DISCLOSURE_03",
+      "trigger": "credit_check_inquiry",
+      "required_phrase": "Applying involves a soft credit check that does not impact your credit score.",
+      "severity": "HIGH"
+    }
+  ]
+}

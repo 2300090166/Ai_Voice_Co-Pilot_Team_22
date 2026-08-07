@@ -1,0 +1,27 @@
+# Core Web & API Framework
+fastapi>=0.110.0
+uvicorn[standard]>=0.28.0
+pydantic>=2.6.0
+pydantic-settings>=2.2.0
+
+# Database & ORM
+sqlalchemy[asyncio]>=2.0.28
+asyncpg>=0.29.0
+alembic>=1.13.0
+
+# AI Foundation & Agent Framework
+google-genai>=0.1.1
+langchain>=0.1.12
+langchain-community>=0.0.28
+faiss-cpu>=1.8.0
+sentence-transformers>=2.5.1
+torch>=2.2.0
+
+# Speech Processing
+openai-whisper>=20231117
+
+# Utilities & Async
+python-dotenv>=1.0.1
+httpx>=0.27.0
+aiofiles>=23.2.1
+python-multipart>=0.0.9

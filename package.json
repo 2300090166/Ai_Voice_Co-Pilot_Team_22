@@ -1,0 +1,26 @@
+{
+  "name": "ai-voice-copilot-inside-sales",
+  "version": "1.0.0",
+  "description": "Enterprise-grade AI Voice Co-Pilot for Inside Sales assisting during customer conversations for Pay-in-3 zero-cost EMI products.",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "dev:backend": "cd backend && uvicorn app.main:app --reload --port 8000",
+    "install:all": "npm --prefix frontend install && cd backend && pip install -r requirements.txt"
+  },
+  "keywords": [
+    "ai",
+    "voice-copilot",
+    "fintech",
+    "pay-in-3",
+    "multi-agent",
+    "fastapi",
+    "react",
+    "gemini",
+    "rag",
+    "faiss"
+  ],
+  "author": "AI Build Hackathon 2026 Team",
+  "license": "MIT"
+}
