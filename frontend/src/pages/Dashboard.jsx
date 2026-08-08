@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import TopNavbar from '../components/dashboard/TopNavbar';
 import CustomerInfo from '../components/dashboard/CustomerInfo';
 import ConversationPanel from '../components/dashboard/ConversationPanel';
 import InsightsPanel from '../components/dashboard/InsightsPanel';
@@ -8,9 +7,10 @@ import PerformanceInsightsPanel from '../components/dashboard/PerformanceInsight
 import SummaryPanel from '../components/dashboard/SummaryPanel';
 import CostMetricCard from '../components/dashboard/CostMetricCard';
 import ConsentBanner from '../components/ConsentBanner';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 /**
- * Enterprise Real-Time SaaS Sales Dashboard Page
+ * Enterprise Real-Time SaaS Sales Dashboard Page Component
  * Aggregates Top AI Consent Banner, Left Lead Profile, Center Live Conversation Feed,
  * Right AI Insights & Recommendations Panel, Cost Per Interaction Card,
  * AI Performance Insights Panel, and Executive CRM Summary.
@@ -60,44 +60,54 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-      {/* Top Navigation Bar */}
-      <TopNavbar />
+    <div className="space-y-6 max-w-[1600px] w-full mx-auto">
+      {/* Top AI Privacy Consent Banner */}
+      <ErrorBoundary>
+        <ConsentBanner />
+      </ErrorBoundary>
 
-      {/* AI Privacy & Consent Banner */}
-      <ConsentBanner />
-
-      {/* Main SaaS Dashboard Container */}
-      <div className="flex-1 p-6 max-w-[1600px] w-full mx-auto space-y-6 overflow-y-auto">
-        {/* 3-Column Top & Middle Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Panel: Customer Information (3 cols) */}
-          <div className="lg:col-span-3">
+      {/* 3-Column Top & Middle Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Panel: Customer Information (3 cols) */}
+        <div className="lg:col-span-3">
+          <ErrorBoundary>
             <CustomerInfo />
-          </div>
+          </ErrorBoundary>
+        </div>
 
-          {/* Center Panel: Live Conversation Stream (5 cols) */}
-          <div className="lg:col-span-5">
+        {/* Center Panel: Live Conversation Stream (5 cols) */}
+        <div className="lg:col-span-5">
+          <ErrorBoundary>
             <ConversationPanel onTurnProcessed={handleTurnProcessed} />
-          </div>
+          </ErrorBoundary>
+        </div>
 
-          {/* Right Panel: AI Intelligence, Suggestions & Cost Metrics (4 cols) */}
-          <div className="lg:col-span-4 space-y-6">
+        {/* Right Panel: Cost Metric, AI Insights & Recommendations (4 cols) */}
+        <div className="lg:col-span-4 space-y-6">
+          <ErrorBoundary>
             <CostMetricCard />
+          </ErrorBoundary>
+          <ErrorBoundary>
             <InsightsPanel turnData={currentTurnData} />
+          </ErrorBoundary>
+          <ErrorBoundary>
             <RecommendationsPanel recommendations={currentTurnData.recommendations} />
-          </div>
+          </ErrorBoundary>
         </div>
+      </div>
 
-        {/* AI Performance Insights Section (12 cols) */}
-        <div>
+      {/* AI Performance Insights Section (12 cols) */}
+      <div>
+        <ErrorBoundary>
           <PerformanceInsightsPanel insightsData={currentTurnData.insights || currentTurnData.insights_data} />
-        </div>
+        </ErrorBoundary>
+      </div>
 
-        {/* Bottom Panel: Executive Call Summary (12 cols) */}
-        <div>
+      {/* Bottom Panel: Executive Call Summary & CRM Card (12 cols) */}
+      <div>
+        <ErrorBoundary>
           <SummaryPanel turnData={currentTurnData} />
-        </div>
+        </ErrorBoundary>
       </div>
     </div>
   );

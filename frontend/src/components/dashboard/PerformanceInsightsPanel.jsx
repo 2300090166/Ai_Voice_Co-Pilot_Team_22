@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award, CheckCircle2, AlertTriangle, Lightbulb, TrendingUp, ShieldCheck, Zap } from 'lucide-react';
+import { Award, CheckCircle2, AlertTriangle, Lightbulb, TrendingUp, ShieldCheck, Zap, Sparkles } from 'lucide-react';
 
 /**
  * AI Performance Insights Panel Component
