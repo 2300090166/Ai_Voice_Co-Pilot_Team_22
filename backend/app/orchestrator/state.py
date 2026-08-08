@@ -1,6 +1,9 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
 
+# Shared in-memory session cache for latest generated CRM records
+crm_memory_store: Dict[str, Dict[str, Any]] = {}
+
 
 class ConversationTurnContext(BaseModel):
     """

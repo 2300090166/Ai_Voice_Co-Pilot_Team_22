@@ -1,16 +1,15 @@
 from fastapi import APIRouter
+from app.services.analytics_service import analytics_service
 
 router = APIRouter()
 
 
-@router.get("/evaluations/{call_id}")
-async def get_call_evaluation(call_id: str):
+@router.get("/dashboard")
+async def get_analytics_dashboard():
     """
-    Get Self Evaluation scorecard and compliance audit for a call.
-    (Placeholder handler)
+    Returns complete aggregated analytics JSON metrics for sales managers:
+    Total Conversations, Active Calls, Average Sales Score, Intent Distribution,
+    Customer Interest breakdown, Quality distribution, Conversion Probability,
+    AI System Usage metrics, and Recent Conversations table.
     """
-    return {
-        "call_id": call_id,
-        "scorecard": {},
-        "compliance_audit": []
-    }
+    return await analytics_service.get_dashboard_analytics()

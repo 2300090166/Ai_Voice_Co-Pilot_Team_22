@@ -1,10 +1,12 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import health, audio, copilot, crm, analytics
+from app.api.v1.endpoints.copilot import router as copilot_router
+from app.api.v1.endpoints.audio import router as audio_router
+from app.api.v1.endpoints.crm import router as crm_router
+from app.api.v1.endpoints.analytics import router as analytics_router
 
 api_router = APIRouter()
 
-api_router.include_router(health.router, prefix="/health", tags=["Health"])
-api_router.include_router(audio.router, prefix="/audio", tags=["Audio Stream"])
-api_router.include_router(copilot.router, prefix="/copilot", tags=["Co-Pilot Orchestration"])
-api_router.include_router(crm.router, prefix="/crm", tags=["CRM"])
-api_router.include_router(analytics.router, prefix="/analytics", tags=["Analytics & Evaluation"])
+api_router.include_router(copilot_router, prefix="/copilot", tags=["Copilot"])
+api_router.include_router(audio_router, prefix="/audio", tags=["Voice Audio"])
+api_router.include_router(crm_router, prefix="/crm", tags=["CRM Automation"])
+api_router.include_router(analytics_router, prefix="/analytics", tags=["Analytics Dashboard"])

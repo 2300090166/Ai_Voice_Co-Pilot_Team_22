@@ -1,21 +1,32 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from app.api.schemas.crm import CRMSummaryResponse, CRMSummaryRequest
+from app.orchestrator.workflow import crm_memory_store
+from app.agents.crm_agent import CRMAgent
 
 router = APIRouter()
+crm_agent_engine = CRMAgent()
 
 
-@router.get("/leads/{lead_id}")
-async def get_lead_info(lead_id: str):
+@router.get("/summary/{session_id}", response_model=CRMSummaryResponse)
+async def get_crm_summary(session_id: str):
     """
-    Fetch customer lead profile and loan history.
-    (Placeholder handler)
+    Retrieve latest generated CRM summary record for a session from in-memory cache.
     """
-    return {"lead_id": lead_id, "status": "placeholder"}
+    if session_id in crm_memory_store:
+        return crm_memory_store[session_id]
+
+    # Return default initialized record if session not in memory yet
+    default_record = await crm_agent_engine.process({"query": "Can students apply for Pay-in-3?"})
+    crm_memory_store[session_id] = default_record
+    return default_record
 
 
-@router.post("/leads/{lead_id}/summary")
-async def generate_crm_summary(lead_id: str):
+@router.post("/summary", response_model=CRMSummaryResponse)
+async def generate_crm_summary(payload: CRMSummaryRequest):
     """
-    Auto-generate post-call CRM disposition and summary.
-    (Placeholder handler)
+    Generate or recalculate CRM summary record on demand.
     """
-    return {"lead_id": lead_id, "summary": "placeholder"}
+    context = {"query": payload.query or "Pay-in-3 zero cost EMI eligibility"}
+    crm_record = await crm_agent_engine.process(context)
+    crm_memory_store[payload.session_id] = crm_record
+    return crm_record
