@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { User, Phone, CreditCard, Clock, Activity, Tag, PhoneOff, CheckCircle2, Mic } from 'lucide-react';
+import { User, Phone, CreditCard, Clock, Activity, Tag, PhoneOff, Mic, MicOff, Play, CheckCircle2 } from 'lucide-react';
 import axios from 'axios';
 
 /**
  * Customer Information Left Panel Component
- * Displays active customer lead profile, contact info, interest tag, connection status,
- * and End Call Session button.
+ * Manages active call session state machine: Idle -> Streaming -> Paused -> Ended -> Idle.
  */
-export default function CustomerInfo({ onSessionEnded }) {
-  const [callEnded, setCallEnded] = useState(false);
+export default function CustomerInfo({
+  sessionStatus = 'streaming',
+  onStartSession,
+  onPauseSession,
+  onResumeSession,
+  onEndSession
+}) {
   const [loading, setLoading] = useState(false);
 
   const customer = {
@@ -17,26 +21,50 @@ export default function CustomerInfo({ onSessionEnded }) {
     phone: '+1 (555) 019-2834',
     product: 'Pay-in-3 Zero-Cost EMI',
     limit: '$1,500 Qualified',
-    duration: callEnded ? '00m 00s' : '03m 42s'
+    duration: sessionStatus === 'ended' ? '00m 00s' : '03m 42s'
   };
 
-  const handleEndCall = async () => {
+  const handleEndCallClick = async () => {
     setLoading(true);
     try {
       await axios.post('/api/v1/call/end', { session_id: 'sess_live_dashboard_01' });
     } catch (err) {
       console.warn('End call API notice:', err);
     } finally {
-      setCallEnded(true);
       setLoading(false);
-      if (onSessionEnded) {
-        onSessionEnded();
+      if (onEndSession) {
+        onEndSession();
       }
     }
   };
 
-  const handleRestartCall = () => {
-    setCallEnded(false);
+  const renderStatusBadge = () => {
+    switch (sessionStatus) {
+      case 'streaming':
+        return (
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 animate-pulse">
+            Streaming Live
+          </span>
+        );
+      case 'paused':
+        return (
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            Paused
+          </span>
+        );
+      case 'ended':
+        return (
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-800 text-slate-400 border border-slate-700">
+            Ended
+          </span>
+        );
+      default:
+        return (
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-800 text-slate-400 border border-slate-700">
+            Standby
+          </span>
+        );
+    }
   };
 
   return (
@@ -49,13 +77,7 @@ export default function CustomerInfo({ onSessionEnded }) {
           </div>
           <h3 className="text-sm font-bold text-slate-100">Customer Profile</h3>
         </div>
-        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-          callEnded
-            ? 'bg-slate-800 text-slate-400 border border-slate-700'
-            : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-        }`}>
-          {callEnded ? 'Session Ended' : 'Live Call'}
-        </span>
+        {renderStatusBadge()}
       </div>
 
       {/* Customer Avatar & Primary Details */}
@@ -108,31 +130,53 @@ export default function CustomerInfo({ onSessionEnded }) {
             <Activity className="w-3.5 h-3.5 text-emerald-400" />
             <span>Status</span>
           </span>
-          <span className={`font-semibold text-[11px] ${callEnded ? 'text-slate-400' : 'text-emerald-400'}`}>
-            {callEnded ? 'Call Terminated' : 'Active Call • Connected'}
+          <span className={`font-semibold text-[11px] ${sessionStatus === 'ended' ? 'text-slate-400' : 'text-emerald-400'}`}>
+            {sessionStatus === 'ended' ? 'Call Terminated' : sessionStatus === 'paused' ? 'Call Paused' : 'Active Call • Connected'}
           </span>
         </div>
       </div>
 
-      {/* End / Restart Call Action Button */}
-      <div className="pt-2 border-t border-slate-800">
-        {callEnded ? (
+      {/* Call Session Controls Engine */}
+      <div className="pt-3 border-t border-slate-800 space-y-2">
+        {sessionStatus === 'ended' || sessionStatus === 'idle' ? (
+          /* Replaces Pause & End buttons with Start Co-Pilot Stream button when Ended/Idle */
           <button
-            onClick={handleRestartCall}
-            className="w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20 transition-all cursor-pointer"
+            onClick={onStartSession}
+            className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl font-bold text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20 transition-all cursor-pointer"
           >
             <Mic className="w-4 h-4" />
             <span>Start Co-Pilot Stream</span>
           </button>
         ) : (
-          <button
-            onClick={handleEndCall}
-            disabled={loading}
-            className="w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg text-xs font-bold bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 transition-all cursor-pointer disabled:opacity-50"
-          >
-            <PhoneOff className="w-4 h-4" />
-            <span>End Call Session</span>
-          </button>
+          /* Pause & End Call Session Buttons when Streaming or Paused */
+          <div className="space-y-2">
+            {sessionStatus === 'streaming' ? (
+              <button
+                onClick={onPauseSession}
+                className="w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 transition-all cursor-pointer"
+              >
+                <MicOff className="w-4 h-4" />
+                <span>Pause Stream</span>
+              </button>
+            ) : (
+              <button
+                onClick={onResumeSession}
+                className="w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all cursor-pointer"
+              >
+                <Play className="w-4 h-4" />
+                <span>Resume Stream</span>
+              </button>
+            )}
+
+            <button
+              onClick={handleEndCallClick}
+              disabled={loading}
+              className="w-full flex items-center justify-center space-x-2 px-3 py-2 rounded-lg text-xs font-bold bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 transition-all cursor-pointer disabled:opacity-50"
+            >
+              <PhoneOff className="w-4 h-4" />
+              <span>End Call Session</span>
+            </button>
+          </div>
         )}
       </div>
     </div>
